@@ -37,7 +37,7 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="home-foot">© 中预三班 · 由班主任亲手搭建</footer>
+      <footer className="home-foot">© 中预三班 · 由Bitbat搭建</footer>
     </div>
   );
 }
