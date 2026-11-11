@@ -1,0 +1,50 @@
+:root {
+  font-family: 'Segoe UI', 'Microsoft YaHei', system-ui, sans-serif;
+  color: #e2e8f0;
+  background: #0b1020;
+  min-height: 100vh;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background:
+  radial-gradient(1000px 520px at 8% -8%, #3b0764 0%, transparent 60%),
+  radial-gradient(900px 500px at 105% 12%, #0e7490 0%, transparent 60%), #0b1020; }
+h1, h2 { margin: 0; }
+
+.home { max-width: 1080px; margin: 0 auto; padding: 48px 20px 32px; }
+
+.home-hero { text-align: center; margin-bottom: 40px; animation: rise 0.6s ease; }
+.home-logo { font-size: 56px; }
+.home-hero h1 {
+  font-size: 40px; margin-top: 8px; letter-spacing: 2px;
+  background: linear-gradient(90deg, #f472b6, #a78bfa, #22d3ee);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.home-hero p { color: #94a3b8; margin-top: 10px; }
+
+.home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+
+.game-card {
+  position: relative; display: flex; gap: 14px; align-items: flex-start;
+  background: rgba(22, 30, 56, 0.85); border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px; padding: 20px; color: inherit; text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  animation: rise 0.5s ease both;
+}
+a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shadow: 0 16px 36px rgba(139, 92, 246, 0.25); }
+.game-card.placeholder { opacity: 0.6; border-style: dashed; }
+
+.gc-icon { font-size: 40px; line-height: 1; }
+.gc-body { flex: 1; }
+.gc-body h2 { font-size: 19px; }
+.gc-body p { color: #94a3b8; font-size: 14px; line-height: 1.6; margin: 8px 0 12px; }
+.gc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.gc-tag { font-size: 12px; padding: 2px 9px; border-radius: 999px; background: rgba(139, 92, 246, 0.18); color: #c4b5fd; }
+.gc-go { position: absolute; right: 18px; bottom: 16px; color: #22d3ee; font-weight: 600; font-size: 14px; }
+
+.home-foot { text-align: center; color: #64748b; font-size: 13px; margin-top: 48px; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
