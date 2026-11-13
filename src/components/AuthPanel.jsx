@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { callAuth, saveToken } from '../cloud.js';
 
-/** 登录 / 注册面板：注册需管理员审核，审核通过后方可登录 */
-export default function AuthPanel({ onLogin }) {
+/**
+ * 登录 / 注册面板：注册需管理员审核，审核通过后方可登录。
+ * onLogin(user)：登录成功回调；onGuest()：选择免登录游玩（仅单机）。
+ */
+export default function AuthPanel({ onLogin, onGuest }) {
   const [mode, setMode] = useState('login'); // login | register
   const [username, setUsername] = useState('');
   const [studentId, setStudentId] = useState('');
@@ -95,6 +98,13 @@ export default function AuthPanel({ onLogin }) {
         >
           {mode === 'login' ? '没有账号？去注册' : '已有账号？去登录'}
         </button>
+
+        <div className="auth-divider"><span>或</span></div>
+
+        <button type="button" className="auth-guest" onClick={onGuest}>
+          🎮 免登录游玩（仅单机模式）
+        </button>
+        <small className="muted center">登录后可解锁联机模式（以后开放）</small>
       </form>
     </div>
   );
