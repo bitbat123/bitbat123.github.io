@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { callAuth, saveToken } from '../cloud.js';
 
+// 临时停用登录/注册：true 时登录相关控件全部禁用变灰，只保留游客入口。
+// 恢复登录功能时改为 false 即可。
+const DISABLE_AUTH = true;
+
 /**
  * 登录 / 注册面板：注册需管理员审核，审核通过后方可登录。
  * onLogin(user)：登录成功回调；onGuest()：选择免登录游玩（仅单机）。
@@ -54,12 +58,12 @@ export default function AuthPanel({ onLogin, onGuest }) {
         </div>
 
         <label>用户名</label>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" required />
+        <input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" required disabled={DISABLE_AUTH} />
 
         {mode === 'register' && (
           <>
             <label>班级学号</label>
-            <input value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="如 17" required />
+            <input value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="如 17" required disabled={DISABLE_AUTH} />
           </>
         )}
 
@@ -70,6 +74,7 @@ export default function AuthPanel({ onLogin, onGuest }) {
           onChange={(e) => setPassword(e.target.value)}
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
           required
+          disabled={DISABLE_AUTH}
         />
 
         {mode === 'register' && (
@@ -81,23 +86,26 @@ export default function AuthPanel({ onLogin, onGuest }) {
               onChange={(e) => setPassword2(e.target.value)}
               autoComplete="new-password"
               required
+              disabled={DISABLE_AUTH}
             />
           </>
         )}
 
         {msg && <div className={`auth-msg ${msg.type}`}>{msg.text}</div>}
 
-        <button className="auth-btn" disabled={busy}>
+        <button className="auth-btn" disabled={busy || DISABLE_AUTH}>
           {busy ? '请稍候…' : mode === 'login' ? '登录' : '提交注册'}
         </button>
 
         <button
           type="button"
           className="auth-switch"
+          disabled={DISABLE_AUTH}
           onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setMsg(null); }}
         >
           {mode === 'login' ? '没有账号？去注册' : '已有账号？去登录'}
         </button>
+        {DISABLE_AUTH && <small className="muted center">登录功能维护中，暂不可用</small>}
 
         <div className="auth-divider"><span>或</span></div>
 
