@@ -45,6 +45,9 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 .home-foot { text-align: center; color: #64748b; font-size: 13px; margin-top: 48px; }
 
 .center { text-align: center; }
+.account-bar { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 10px; font-size: 14px; flex-wrap: wrap; }
+.auth-slot { margin: 0 0 28px; }
+.gc-tag.mp { background: rgba(251, 191, 36, 0.18); color: #fde68a; }
 .logout { margin-left: 10px; background: transparent; border: 1px solid rgba(148,163,184,.4); color: #94a3b8; border-radius: 8px; padding: 2px 10px; cursor: pointer; font: inherit; font-size: 12px; }
 .logout:hover { color: #e2e8f0; }
 

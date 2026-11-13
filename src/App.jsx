@@ -3,12 +3,16 @@ import { GAMES } from './games.js';
 import AuthPanel from './components/AuthPanel.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
-/** 主页：登录后显示游戏列表；未登录显示登录 / 注册 */
+/**
+ * 主页：所有人（包括游客）都能看到游戏列表并玩单机模式。
+ * 登录 / 注册是可选入口：登录后可玩联机模式（联机功能以后再做）。
+ */
 export default function App() {
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
+  const [showAuth, setShowAuth] = useState(false);
 
-  // 启动时用本地令牌恢复会话
+  // 启动时用本地令牌恢复会话（失败则视为游客）
   useEffect(() => {
     const token = getToken();
     if (!token) { setChecking(false); return; }
@@ -20,33 +24,35 @@ export default function App() {
 
   const logout = () => { clearToken(); setUser(null); };
 
-  if (checking) {
-    return <div className="home"><p className="muted center">加载中…</p></div>;
-  }
-
-  if (!user) {
-    return (
-      <div className="home">
-        <header className="home-hero">
-          <div className="home-logo">🎮</div>
-          <h1>中预三班游戏&amp;工具盒</h1>
-        </header>
-        <AuthPanel onLogin={setUser} />
-        <footer className="home-foot">© 中预三班 · 由Bitbat搭建</footer>
-      </div>
-    );
-  }
-
   return (
     <div className="home">
       <header className="home-hero">
         <div className="home-logo">🎮</div>
         <h1>中预三班游戏&amp;工具盒</h1>
-        <p>
-          你好，{user.username}
-          <button className="logout" onClick={logout}>退出登录</button>
-        </p>
+        <div className="account-bar">
+          {checking ? (
+            <span className="muted">检查登录状态…</span>
+          ) : user ? (
+            <>
+              <span>你好，{user.username}</span>
+              <button className="logout" onClick={logout}>退出登录</button>
+            </>
+          ) : (
+            <>
+              <span className="muted">当前为游客：可玩单机模式</span>
+              <button className="logout" onClick={() => setShowAuth((v) => !v)}>
+                {showAuth ? '收起' : '登录 / 注册（解锁联机）'}
+              </button>
+            </>
+          )}
+        </div>
       </header>
+
+      {!user && showAuth && (
+        <div className="auth-slot">
+          <AuthPanel onLogin={(u) => { setUser(u); setShowAuth(false); }} />
+        </div>
+      )}
 
       <main className="home-grid">
         {GAMES.map((g) => (
@@ -59,6 +65,7 @@ export default function App() {
                 {g.tags.map((t) => (
                   <span key={t} className="gc-tag">{t}</span>
                 ))}
+                {g.multiplayer && <span className="gc-tag mp">联机（需登录）</span>}
               </div>
             </div>
             <span className="gc-go">开始 ›</span>
