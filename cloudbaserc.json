@@ -1,0 +1,13 @@
+{
+  "envId": "interim-toucan-d4g2tnti4470549e1",
+  "functionRoot": "cloudfunctions",
+  "functions": [
+    {
+      "name": "auth",
+      "timeout": 10,
+      "runtime": "Nodejs18.15",
+      "handler": "index.main",
+      "installDependency": true
+    }
+  ]
+}
