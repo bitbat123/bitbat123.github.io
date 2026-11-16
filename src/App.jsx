@@ -3,6 +3,7 @@ import { GAMES } from './games.js';
 import AuthPanel from './components/AuthPanel.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
 import MemberList from './components/MemberList.jsx';
+import DeleteAccountDialog from './components/DeleteAccountDialog.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
 // 管理员用户名（与云函数中的常量保持一致）
@@ -18,6 +19,7 @@ export default function App() {
   const [user, setUser] = useState(null);      // { username } | null
   const [guest, setGuest] = useState(false);   // 是否选择了免登录游玩
   const [checking, setChecking] = useState(true);
+  const [showDelete, setShowDelete] = useState(false);
 
   // 启动时用本地令牌恢复会话，恢复成功则直接进入游戏列表
   useEffect(() => {
@@ -63,6 +65,9 @@ export default function App() {
             <>
               <span>你好，{user.username}</span>
               <button className="logout" onClick={logout}>退出登录</button>
+              {user.username !== ADMIN_USERNAME && (
+                <button className="logout danger" onClick={() => setShowDelete(true)}>注销账号</button>
+              )}
             </>
           ) : (
             <>
@@ -72,6 +77,14 @@ export default function App() {
           )}
         </div>
       </header>
+
+      {showDelete && (
+        <DeleteAccountDialog
+          username={user.username}
+          onCancel={() => setShowDelete(false)}
+          onDone={() => { clearToken(); setUser(null); setGuest(false); setShowDelete(false); }}
+        />
+      )}
 
       {user && user.username === ADMIN_USERNAME && <AdminPanel />}
 

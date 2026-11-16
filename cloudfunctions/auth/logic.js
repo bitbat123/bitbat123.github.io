@@ -95,6 +95,19 @@ async function handle(event = {}, store, cfg) {
     return ok({ users: await store.listMembers() });
   }
 
+  // 注销账号：只能注销自己；管理员账号不允许自助注销，避免失去审核入口
+  if (action === 'deleteAccount') {
+    const sess = verifySession(event.token, secret);
+    if (!sess) return fail('登录已过期，请重新登录');
+    if (sess.username === ADMIN_USERNAME) return fail('管理员账号不能自助注销');
+    const user = await store.findUser(sess.username);
+    if (!user || !verifyPassword(event.password || '', user.salt, user.hash)) {
+      return fail('密码错误，无法注销');
+    }
+    await store.deleteUser(sess.username);
+    return ok({ message: '账号已注销' });
+  }
+
   if (action === 'listPending' || action === 'review') {
     const sess = verifySession(event.token, secret);
     if (!sess || sess.username !== ADMIN_USERNAME) return fail('无管理员权限');

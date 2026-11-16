@@ -101,6 +101,14 @@ const store = {
     );
   },
 
+  async deleteUser(username) {
+    checkUsername(username);
+    const res = await run(
+      `DELETE FROM auth_private.users WHERE username = ${lit(username)}`,
+    );
+    return (res.AffectedRows || 0) > 0;
+  },
+
   async setStatus(username, status) {
     checkUsername(username);
     if (!STATUS_SET.has(status)) throw new Error('非法状态');
