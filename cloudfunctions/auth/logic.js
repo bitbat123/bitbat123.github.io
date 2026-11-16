@@ -67,6 +67,7 @@ async function handle(event = {}, store, cfg) {
       studentId: String(event.studentId).padStart(2, '0'),
       salt,
       hash,
+      note: typeof event.note === 'string' ? event.note.slice(0, 100) : '',
       status: 'pending',
       createdAt: Date.now(),
     });

@@ -12,6 +12,7 @@ export default function AuthPanel({ onLogin, onGuest }) {
   const [mode, setMode] = useState('login'); // login | register
   const [username, setUsername] = useState('');
   const [studentId, setStudentId] = useState('');
+  const [note, setNote] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [busy, setBusy] = useState(false);
@@ -27,11 +28,11 @@ export default function AuthPanel({ onLogin, onGuest }) {
     setBusy(true);
     try {
       if (mode === 'register') {
-        const r = await callAuth('register', { username, studentId, password });
+        const r = await callAuth('register', { username, studentId, password, note });
         if (r.ok) {
           setMsg({ type: 'ok', text: r.message });
           setMode('login');
-          setPassword(''); setPassword2('');
+          setPassword(''); setPassword2(''); setNote('');
         } else setMsg({ type: 'err', text: r.message });
       } else {
         const r = await callAuth('login', { username, password });
@@ -61,8 +62,16 @@ export default function AuthPanel({ onLogin, onGuest }) {
 
         {mode === 'register' && (
           <>
-            <label>班级学号</label>
+            <label>学号（必须是真实的，否则无视）</label>
             <input value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="如 17" required disabled={DISABLE_AUTH} />
+            <label>备注（可选）</label>
+            <input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="想告诉管理员的话"
+              maxLength={100}
+              disabled={DISABLE_AUTH}
+            />
           </>
         )}
 

@@ -59,6 +59,7 @@ export default function AdminPanel({ onCountChange }) {
               <div>
                 <b>{u.username}</b>
                 <small className="muted">学号 {u.studentId}</small>
+                {u.note && <small className="admin-note">备注：{u.note}</small>}
               </div>
               <div className="admin-actions">
                 <button className="btn-approve" disabled={busy} onClick={() => review(u.username, 'approve')}>通过</button>

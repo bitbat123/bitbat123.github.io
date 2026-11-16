@@ -113,3 +113,5 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 }
 .admin-item small { margin-left: 8px; }
 .admin-actions { display: flex; gap: 8px; }
+
+.admin-note { display: block; margin-left: 0; margin-top: 2px; color: #c4b5fd; }

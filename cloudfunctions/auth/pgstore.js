@@ -58,9 +58,14 @@ const store = {
 
   async listPending() {
     const res = await run(
-      "SELECT username, student_id, extract(epoch from created_at) * 1000 AS created_ms FROM auth_private.users WHERE status = 'pending' ORDER BY created_at",
+      "SELECT username, student_id, note, extract(epoch from created_at) * 1000 AS created_ms FROM auth_private.users WHERE status = 'pending' ORDER BY created_at",
     );
-    return parseRows(res).map((r) => ({ username: r.username, studentId: r.student_id, createdAt: Number(r.created_ms) }));
+    return parseRows(res).map((r) => ({
+      username: r.username,
+      studentId: r.student_id,
+      note: r.note || '',
+      createdAt: Number(r.created_ms),
+    }));
   },
 
   async addUser(u) {
@@ -68,8 +73,9 @@ const store = {
     if (!/^\d{1,4}$/.test(String(u.studentId))) throw new Error('非法学号');
     if (!HEX_RE.test(u.salt) || !HEX_RE.test(u.hash)) throw new Error('非法哈希');
     if (!STATUS_SET.has(u.status)) throw new Error('非法状态');
+    const note = typeof u.note === 'string' ? u.note.slice(0, 100) : '';
     await run(
-      `INSERT INTO auth_private.users (username, student_id, salt, hash, status) VALUES (${lit(u.username)}, ${lit(u.studentId)}, ${lit(u.salt)}, ${lit(u.hash)}, ${lit(u.status)})`,
+      `INSERT INTO auth_private.users (username, student_id, salt, hash, note, status) VALUES (${lit(u.username)}, ${lit(u.studentId)}, ${lit(u.salt)}, ${lit(u.hash)}, ${lit(note)}, ${lit(u.status)})`,
     );
   },
 
