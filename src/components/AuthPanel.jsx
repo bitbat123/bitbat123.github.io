@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { callAuth, saveToken } from '../cloud.js';
 
-// 临时停用登录/注册：true 时登录相关控件全部禁用变灰，只保留游客入口。
-// 恢复登录功能时改为 false 即可。
-const DISABLE_AUTH = true;
+// 登录 / 注册开关：设为 false 可临时停用登录（控件变灰），只保留游客入口。
+const DISABLE_AUTH = false;
 
 /**
  * 登录 / 注册面板：注册需管理员审核，审核通过后方可登录。
