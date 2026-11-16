@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { GAMES } from './games.js';
 import AuthPanel from './components/AuthPanel.jsx';
+import AdminPanel from './components/AdminPanel.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
+
+// 管理员用户名（与云函数中的常量保持一致）
+const ADMIN_USERNAME = 'bitbat';
 
 /**
  * 首页流程：
@@ -67,6 +71,8 @@ export default function App() {
           )}
         </div>
       </header>
+
+      {user && user.username === ADMIN_USERNAME && <AdminPanel />}
 
       <main className="home-grid">
         {GAMES.map((g) => (

@@ -91,3 +91,25 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
 }
+.admin-card {
+  background: rgba(22, 30, 56, 0.85); border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 18px; padding: 20px; margin: 0 0 28px; animation: rise 0.4s ease;
+}
+.admin-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.admin-head h2 { font-size: 18px; }
+.btn-mini, .btn-approve, .btn-reject {
+  border: 1px solid rgba(148, 163, 184, 0.3); border-radius: 8px; padding: 4px 12px;
+  font: inherit; font-size: 13px; cursor: pointer; background: transparent; color: #e2e8f0;
+}
+.btn-approve { color: #86efac; border-color: rgba(34, 197, 94, 0.5); }
+.btn-approve:hover { background: rgba(34, 197, 94, 0.15); }
+.btn-reject { color: #fca5a5; border-color: rgba(239, 68, 68, 0.5); }
+.btn-reject:hover { background: rgba(239, 68, 68, 0.15); }
+.btn-mini:hover { background: rgba(148, 163, 184, 0.15); }
+.admin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.admin-item {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 10px 14px;
+}
+.admin-item small { margin-left: 8px; }
+.admin-actions { display: flex; gap: 8px; }
