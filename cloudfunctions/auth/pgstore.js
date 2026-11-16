@@ -74,6 +74,22 @@ const store = {
     }));
   },
 
+  async findByStudentId(studentId) {
+    if (!/^\d{1,4}$/.test(String(studentId))) throw new Error('非法学号');
+    const res = await run(
+      `SELECT username FROM auth_private.users WHERE student_id = ${lit(studentId)} LIMIT 1`,
+    );
+    return parseRows(res)[0] || null;
+  },
+
+  /** 公开名单：已通过审核且未隐藏（管理员可见，测试账号被隐藏） */
+  async listMembers() {
+    const res = await run(
+      "SELECT username, student_id FROM auth_private.users WHERE status = 'approved' AND hidden = false ORDER BY student_id",
+    );
+    return parseRows(res).map((r) => ({ username: r.username, studentId: r.student_id }));
+  },
+
   async addUser(u) {
     checkUsername(u.username);
     if (!/^\d{1,4}$/.test(String(u.studentId))) throw new Error('非法学号');
@@ -81,7 +97,7 @@ const store = {
     if (!STATUS_SET.has(u.status)) throw new Error('非法状态');
     const note = typeof u.note === 'string' ? u.note.slice(0, 100) : '';
     await run(
-      `INSERT INTO auth_private.users (username, student_id, salt, hash, note, status) VALUES (${lit(u.username)}, ${lit(u.studentId)}, ${lit(u.salt)}, ${lit(u.hash)}, ${litText(note)}, ${lit(u.status)})`,
+      `INSERT INTO auth_private.users (username, student_id, salt, hash, note, status, hidden) VALUES (${lit(u.username)}, ${lit(u.studentId)}, ${lit(u.salt)}, ${lit(u.hash)}, ${litText(note)}, ${lit(u.status)}, ${u.hidden === true})`,
     );
   },
 

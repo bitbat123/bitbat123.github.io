@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GAMES } from './games.js';
 import AuthPanel from './components/AuthPanel.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
+import MemberList from './components/MemberList.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
 // 管理员用户名（与云函数中的常量保持一致）
@@ -73,6 +74,8 @@ export default function App() {
       </header>
 
       {user && user.username === ADMIN_USERNAME && <AdminPanel />}
+
+      <MemberList />
 
       <main className="home-grid">
         {GAMES.map((g) => (

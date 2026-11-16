@@ -115,3 +115,19 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 .admin-actions { display: flex; gap: 8px; }
 
 .admin-note { display: block; margin-left: 0; margin-top: 2px; color: #c4b5fd; }
+.member-card {
+  background: rgba(22, 30, 56, 0.85); border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px; padding: 20px; margin: 0 0 28px; animation: rise 0.4s ease;
+}
+.member-head { margin-bottom: 12px; }
+.member-head h2 { font-size: 18px; }
+.member-grid { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.member {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 14px;
+  background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px; padding: 6px 14px;
+}
+.member-admin { border-color: rgba(251, 191, 36, 0.6); background: rgba(251, 191, 36, 0.12); }
+.member-name { font-weight: 600; }
+.member-sid { color: #94a3b8; font-size: 12px; }
+.member-tag { font-size: 11px; color: #fde68a; }

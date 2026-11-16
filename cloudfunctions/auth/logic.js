@@ -61,6 +61,9 @@ async function handle(event = {}, store, cfg) {
     const err = validate(event);
     if (err) return fail(err);
     if (await store.findUser(event.username)) return fail('用户名已存在');
+    // 学号唯一：已被占用（含待审核申请）则拒绝，防止用同一学号注册小号
+    const sid = String(event.studentId).padStart(2, '0');
+    if (await store.findByStudentId(sid)) return fail('该学号已被注册，不能重复注册');
     const { salt, hash } = hashPassword(event.password);
     await store.addUser({
       username: event.username,
@@ -85,6 +88,11 @@ async function handle(event = {}, store, cfg) {
     const sess = verifySession(event.token, secret);
     if (!sess) return fail('登录已过期');
     return ok({ username: sess.username });
+  }
+
+  // 公开名单：所有已通过审核、且未标记 hidden 的学生（管理员 bitbat 也显示）
+  if (action === 'listMembers') {
+    return ok({ users: await store.listMembers() });
   }
 
   if (action === 'listPending' || action === 'review') {
