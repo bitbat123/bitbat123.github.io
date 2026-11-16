@@ -25,6 +25,12 @@ function lit(value) {
   return `'${s.replace(/'/g, "''")}'`;
 }
 
+/** 自由文本（如备注）：允许任意字符，仅转义单引号并拒绝空字节 */
+function litText(value) {
+  const s = String(value ?? '').replace(/\u0000/g, '');
+  return `'${s.replace(/'/g, "''")}'`;
+}
+
 function checkUsername(u) {
   if (!USERNAME_RE.test(u)) throw new Error('非法用户名');
   return u;
@@ -75,7 +81,7 @@ const store = {
     if (!STATUS_SET.has(u.status)) throw new Error('非法状态');
     const note = typeof u.note === 'string' ? u.note.slice(0, 100) : '';
     await run(
-      `INSERT INTO auth_private.users (username, student_id, salt, hash, note, status) VALUES (${lit(u.username)}, ${lit(u.studentId)}, ${lit(u.salt)}, ${lit(u.hash)}, ${lit(note)}, ${lit(u.status)})`,
+      `INSERT INTO auth_private.users (username, student_id, salt, hash, note, status) VALUES (${lit(u.username)}, ${lit(u.studentId)}, ${lit(u.salt)}, ${lit(u.hash)}, ${litText(note)}, ${lit(u.status)})`,
     );
   },
 
