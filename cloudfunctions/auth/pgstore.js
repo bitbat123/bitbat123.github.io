@@ -82,12 +82,12 @@ const store = {
     return parseRows(res)[0] || null;
   },
 
-  /** 公开名单：已通过审核且未隐藏（管理员可见，测试账号被隐藏） */
+  /** 公开名单：已通过审核且未隐藏（管理员可见，测试账号被隐藏），按分组返回 */
   async listMembers() {
     const res = await run(
-      "SELECT username, student_id FROM auth_private.users WHERE status = 'approved' AND hidden = false ORDER BY student_id",
+      "SELECT username, student_id, grp FROM auth_private.users WHERE status = 'approved' AND hidden = false ORDER BY grp, student_id",
     );
-    return parseRows(res).map((r) => ({ username: r.username, studentId: r.student_id }));
+    return parseRows(res).map((r) => ({ username: r.username, studentId: r.student_id, group: r.grp || 'main' }));
   },
 
   async addUser(u) {

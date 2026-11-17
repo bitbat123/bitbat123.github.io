@@ -141,3 +141,7 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 .dialog .check { display: flex; align-items: center; gap: 8px; color: #e2e8f0; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
 .dialog-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.member-group { margin-bottom: 14px; }
+.member-group-title { font-size: 13px; color: #94a3b8; margin: 0 0 8px; font-weight: 600; }
+.member-group:last-child { margin-bottom: 0; }

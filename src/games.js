@@ -9,6 +9,15 @@ export const GAMES = [
     tagline: '带一个班走完六年或七年，让学生从 F 一路升到 US。',
     tags: ['模拟经营', '随机事件'],
     href: '/class-sim/',
+    multiplayer: true,
+  },
+  {
+    id: 'bomb-contest',
+    name: 'C++ 炸弹人程序大赛',
+    icon: '💣',
+    tagline: '写一段类 C++ 代码，让你的炸弹人自己上场打仗。三局两胜。',
+    tags: ['编程对战', 'AI'],
+    href: '/class-sim/bomb-contest/',
     multiplayer: false,
   },
 ];

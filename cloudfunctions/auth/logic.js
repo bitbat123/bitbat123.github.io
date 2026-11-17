@@ -39,9 +39,20 @@ function verifySession(token, secret) {
 const ok = (data = {}) => ({ ok: true, ...data });
 const fail = (message) => ({ ok: false, message });
 
+// 学号格式：本班为 1–4 位数字（如 07、0119）；外班为字母前缀 + 分隔（如 E1-17）
+const ID_MAIN = /^\d{1,4}$/;
+const ID_EXTERNAL = /^[A-Za-z]\d{1,2}-\d{1,4}$/;
+
+function isExternalId(id) {
+  return ID_EXTERNAL.test(String(id));
+}
+
 function validate({ username, studentId, password }) {
   if (!username || !/^[A-Za-z0-9_\u4e00-\u9fa5]{2,20}$/.test(username)) return '用户名 2–20 位，仅字母、数字、下划线或中文';
-  if (!studentId || !/^\d{1,4}$/.test(String(studentId))) return '班级学号为 1–4 位数字';
+  if (!studentId) return '请填写学号';
+  if (!ID_MAIN.test(String(studentId)) && !ID_EXTERNAL.test(String(studentId))) {
+    return '学号格式：本班填 1–4 位数字（如 07）；外班填字母+编号（如 E1-17）';
+  }
   if (!password || password.length < 6) return '密码至少 6 位';
   return null;
 }
@@ -62,12 +73,14 @@ async function handle(event = {}, store, cfg) {
     if (err) return fail(err);
     if (await store.findUser(event.username)) return fail('用户名已存在');
     // 学号唯一：已被占用（含待审核申请）则拒绝，防止用同一学号注册小号
-    const sid = String(event.studentId).padStart(2, '0');
+    const external = isExternalId(event.studentId);
+    const sid = external ? String(event.studentId).toUpperCase() : String(event.studentId).padStart(2, '0');
     if (await store.findByStudentId(sid)) return fail('该学号已被注册，不能重复注册');
     const { salt, hash } = hashPassword(event.password);
     await store.addUser({
       username: event.username,
-      studentId: String(event.studentId).padStart(2, '0'),
+      studentId: sid,
+      group: external ? 'external' : 'main',
       salt,
       hash,
       note: typeof event.note === 'string' ? event.note.slice(0, 100) : '',
