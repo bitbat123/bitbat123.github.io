@@ -63,9 +63,15 @@ const rooms = {
     const dup = await run(`SELECT id FROM social.rooms WHERE code = ${lit(code)} LIMIT 1`);
     if (parseRows(dup).length) throw new Error('房间号已被占用');
     const res = await run(
-      `INSERT INTO social.rooms (game, code, owner, title, pass_key, status) VALUES (${lit(game)}, ${lit(code)}, ${lit(owner)}, ${litText(t)}, ${litText(passKey || '')}, 'open') RETURNING id, code, owner, title, game, status, (pass_key <> '') AS locked`,
+      `WITH ins AS (
+         INSERT INTO social.rooms (game, code, owner, title, pass_key, status)
+         VALUES (${lit(game)}, ${lit(code)}, ${lit(owner)}, ${litText(t)}, ${litText(passKey || '')}, 'open')
+         RETURNING id, code, owner, title, game, status, (pass_key <> '') AS locked
+       )
+       SELECT id, code, owner, title, game, status, locked FROM ins`,
     );
     const row = parseRows(res)[0];
+    if (!row) throw new Error('创建房间失败');
     await rooms.addMember(row.id, owner, 'player1');
     return row;
   },
@@ -153,23 +159,33 @@ const rooms = {
 
 // ---------------- 聊天室 ----------------
 const chat = {
-  async send({ channel, sender, body }) {
+  async send({ channel, sender, body, format }) {
     checkUsername(sender);
     const ch = String(channel || 'public').slice(0, 40);
     const text = String(body || '').slice(0, 2000);
+    const fmt = format === 'plain' ? 'plain' : 'markdown';
     if (!text.trim()) throw new Error('消息为空');
+    // 注意：ExecutePGSql 对 INSERT ... RETURNING 不返回 Rows（Columns 为 null），
+    // 必须用 CTE 包一层才能拿到插入结果。
     const res = await run(
-      `INSERT INTO social.messages (channel, sender, body) VALUES (${litText(ch)}, ${lit(ch)}, ${litText(text)}) RETURNING id, created_at`,
+      `WITH ins AS (
+         INSERT INTO social.messages (channel, sender, body, format)
+         VALUES (${litText(ch)}, ${lit(sender)}, ${litText(text)}, ${lit(fmt)})
+         RETURNING id, created_at, format
+       )
+       SELECT id, created_at, format FROM ins`,
     );
     const r = parseRows(res)[0];
-    return { id: Number(r.id), at: r.created_at };
+    if (!r) throw new Error('消息写入失败');
+    return { id: Number(r.id), at: r.created_at, sender, body: text, format: r.format };
   },
 
   /** 拉取某频道 id 之后的消息（轮询用） */
   async since(channel, afterId = 0, limit = 100) {
     const ch = String(channel || 'public').slice(0, 40);
     const res = await run(
-      `SELECT id, channel, sender, body, extract(epoch from created_at) * 1000 AS ms
+      `SELECT id, channel, sender, body, COALESCE(format, 'markdown') AS format,
+              extract(epoch from created_at) * 1000 AS ms
          FROM social.messages
         WHERE channel = ${litText(ch)} AND id > ${Number(afterId) || 0}
         ORDER BY id ASC LIMIT ${Math.min(Number(limit) || 100, 200)}`,
@@ -179,6 +195,7 @@ const chat = {
       channel: r.channel,
       sender: r.sender,
       body: r.body,
+      format: r.format || 'markdown',
       at: Number(r.ms),
     }));
   },

@@ -100,7 +100,7 @@ async function handleSocial(event, secret) {
         if (!exists) return { ok: false, message: '对方不存在' };
         channel = chat.dmChannel(me, to);
       }
-      const saved = await chat.send({ channel, sender: me, body });
+      const saved = await chat.send({ channel, sender: me, body, format: event.format });
       return { ok: true, message: saved };
     }
     case 'chatFetch': {

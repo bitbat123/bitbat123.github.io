@@ -6,7 +6,7 @@ import MemberList from './components/MemberList.jsx';
 import DeleteAccountDialog from './components/DeleteAccountDialog.jsx';
 import RoomLobby from './components/RoomLobby.jsx';
 import RoomView from './components/RoomView.jsx';
-import ChatRoom from './components/ChatRoom.jsx';
+import ChatSidebar from './components/ChatSidebar.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
 // 管理员用户名（与云函数中的常量保持一致）
@@ -53,7 +53,8 @@ export default function App() {
           onLogin={(u) => setUser(u)}
           onGuest={() => setGuest(true)}
         />
-        <footer className="home-foot">© 中预三班 · 由Bitbat搭建</footer>
+
+      <footer className="home-foot">© 中预三班 · 由Bitbat搭建</footer>
       </div>
     );
   }
@@ -97,8 +98,6 @@ export default function App() {
         <RoomView room={room} me={user.username} onLeave={() => setRoom(null)} />
       )}
 
-      {user && <ChatRoom me={user.username} />}
-
       <MemberList />
 
       <main className="home-grid">
@@ -127,6 +126,8 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {user && <ChatSidebar me={user.username} />}
 
       <footer className="home-foot">© 中预三班 · 由Bitbat搭建</footer>
     </div>
