@@ -145,3 +145,53 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 .member-group { margin-bottom: 14px; }
 .member-group-title { font-size: 13px; color: #94a3b8; margin: 0 0 8px; font-weight: 600; }
 .member-group:last-child { margin-bottom: 0; }
+
+/* ---------- 房间大厅 ---------- */
+.lobby, .room-view, .chat-card { background: rgba(22,30,56,0.85); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+.lobby-head, .room-view-head, .chat-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.lobby-head h2, .room-view-head h2, .chat-head h2 { font-size: 17px; }
+.lobby-actions { display: flex; gap: 8px; }
+.create-box { background: rgba(15,23,42,0.7); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+.create-box label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+.create-box input, .join-box-inline input, .chat-peer-add input, .room-approve input { background: rgba(15,23,42,0.8); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; color: #e2e8f0; font: inherit; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row input { flex: 1; }
+.join-box-inline { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.join-box-inline input { flex: 1; min-width: 120px; }
+.room-list { display: flex; flex-direction: column; gap: 8px; }
+.room-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(15,23,42,0.6); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; flex-wrap: wrap; }
+.room-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.room-title { color: #fbbf24; font-size: 13px; }
+.room-item-actions { display: flex; align-items: center; gap: 8px; }
+.room-status { font-size: 12px; padding: 2px 8px; border-radius: 999px; }
+.room-status.s-open { background: rgba(34,197,94,0.2); color: #86efac; }
+.room-status.s-playing { background: rgba(251,191,36,0.2); color: #fde68a; }
+.room-status.s-finished { background: rgba(148,163,184,0.2); color: #94a3b8; }
+.room-members ul { list-style: none; padding: 0; margin: 8px 0; display: flex; flex-direction: column; gap: 6px; }
+.room-approve { margin-top: 12px; }
+
+/* ---------- 聊天室 ---------- */
+.chat-body { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 12px; }
+@media (max-width: 800px) { .chat-body { grid-template-columns: 1fr; } }
+.chat-side { display: flex; flex-direction: column; gap: 8px; }
+.chat-channel { text-align: left; background: rgba(15,23,42,0.6); border: 1px solid var(--border); border-radius: 9px; color: #e2e8f0; font: inherit; padding: 8px 12px; cursor: pointer; }
+.chat-channel.on { background: rgba(139,92,246,0.25); border-color: #8b5cf6; }
+.chat-side-title { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+.chat-peers { display: flex; flex-direction: column; gap: 4px; max-height: 160px; overflow: auto; }
+.chat-peer { text-align: left; background: transparent; border: none; color: #cbd5e1; font: inherit; font-size: 13px; padding: 5px 8px; border-radius: 7px; cursor: pointer; }
+.chat-peer:hover { background: rgba(148,163,184,0.12); }
+.chat-peer.on { background: rgba(139,92,246,0.25); color: #fff; }
+.chat-peer-add { display: flex; gap: 6px; margin-top: 6px; }
+.chat-peer-add input { flex: 1; min-width: 0; }
+.chat-main { display: flex; flex-direction: column; gap: 8px; }
+.chat-title { font-size: 13px; color: #94a3b8; }
+.chat-list { height: 320px; overflow-y: auto; background: rgba(15,23,42,0.6); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.chat-msg { background: rgba(30,41,59,0.8); border-radius: 9px; padding: 8px 11px; }
+.chat-msg.mine { background: rgba(139,92,246,0.18); border: 1px solid rgba(139,92,246,0.4); }
+.chat-meta { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; margin-bottom: 4px; }
+.chat-text { font-size: 13px; line-height: 1.65; word-break: break-word; }
+.chat-text p { margin: 0 0 6px; }
+.chat-text pre { background: rgba(2,6,23,0.9); padding: 8px; border-radius: 6px; overflow-x: auto; }
+.chat-text code { background: rgba(2,6,23,0.8); padding: 1px 4px; border-radius: 4px; }
+.chat-input { display: flex; gap: 8px; align-items: flex-end; }
+.chat-input textarea { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: #e2e8f0; font: inherit; resize: vertical; }

@@ -4,6 +4,9 @@ import AuthPanel from './components/AuthPanel.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
 import MemberList from './components/MemberList.jsx';
 import DeleteAccountDialog from './components/DeleteAccountDialog.jsx';
+import RoomLobby from './components/RoomLobby.jsx';
+import RoomView from './components/RoomView.jsx';
+import ChatRoom from './components/ChatRoom.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
 // 管理员用户名（与云函数中的常量保持一致）
@@ -20,6 +23,7 @@ export default function App() {
   const [guest, setGuest] = useState(false);   // 是否选择了免登录游玩
   const [checking, setChecking] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
+  const [room, setRoom] = useState(null);
 
   // 启动时用本地令牌恢复会话，恢复成功则直接进入游戏列表
   useEffect(() => {
@@ -87,6 +91,13 @@ export default function App() {
       )}
 
       {user && user.username === ADMIN_USERNAME && <AdminPanel />}
+
+      {user && <RoomLobby me={user.username} onEnter={(r) => setRoom(r)} />}
+      {user && room && (
+        <RoomView room={room} me={user.username} onLeave={() => setRoom(null)} />
+      )}
+
+      {user && <ChatRoom me={user.username} />}
 
       <MemberList />
 

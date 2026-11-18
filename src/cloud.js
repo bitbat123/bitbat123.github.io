@@ -36,7 +36,11 @@ async function ensureSharedLogin() {
 /** 调用云函数 auth（所有业务判断都在服务端） */
 export async function callAuth(action, payload = {}) {
   await ensureSharedLogin();
-  const res = await getApp().callFunction({ name: 'auth', data: { action, ...payload } });
+  const token = typeof localStorage !== 'undefined' ? localStorage.getItem('authToken') : null;
+  const data = { action, ...payload };
+  // 房间 / 聊天等需要身份的操作，自动带上会话令牌
+  if (token && data.token === undefined) data.token = token;
+  const res = await getApp().callFunction({ name: 'auth', data });
   return res.result;
 }
 
