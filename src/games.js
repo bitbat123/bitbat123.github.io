@@ -20,4 +20,22 @@ export const GAMES = [
     href: '/class-sim/bomb-contest/',
     multiplayer: false,
   },
+  {
+    id: 'gomoku',
+    name: 'C++ 五子棋程序大赛',
+    icon: '⚫',
+    tagline: '写一段类 C++ 代码，让它替你落子。先连成五子者胜。',
+    tags: ['编程对战', '棋类'],
+    href: '/class-sim/gomoku/',
+    multiplayer: false,
+  },
+  {
+    id: 'racing',
+    name: 'C++ 赛车程序大赛',
+    icon: '🏎️',
+    tagline: '写一段类 C++ 代码，把车开过随机生成的赛道。',
+    tags: ['编程对战', '物理模拟'],
+    href: '/class-sim/racing/',
+    multiplayer: false,
+  },
 ];
