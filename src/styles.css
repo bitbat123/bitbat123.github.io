@@ -236,3 +236,17 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 .chat-format label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
 .chat-input { display: flex; gap: 6px; align-items: flex-end; }
 .chat-input textarea { flex: 1; background: rgba(15,23,42,0.85); border: 1px solid var(--border); border-radius: 9px; padding: 8px; color: #e2e8f0; font: inherit; font-size: 13px; resize: none; }
+
+/* ---------- 轮询式联机 ---------- */
+.polling-card { background: rgba(22,30,56,0.85); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+.polling-card h2 { font-size: 17px; margin-bottom: 8px; }
+.polling-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.section-title { font-size: 14px; margin: 14px 0 8px; color: #fbbf24; }
+.match-list { display: flex; flex-direction: column; gap: 8px; }
+.match-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(15,23,42,0.6); border: 1px solid var(--border); border-radius: 10px; padding: 9px 13px; flex-wrap: wrap; }
+.match-players { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.match-players .vs { color: #64748b; font-size: 12px; }
+.match-players .ready { color: #86efac; }
+.polling-card textarea { width: 100%; background: rgba(15,23,42,0.85); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: #e2e8f0; font: inherit; font-family: Consolas, monospace; font-size: 13px; }
+.turn-box { background: rgba(15,23,42,0.7); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.result-line { color: #fbbf24; font-weight: 600; }

@@ -3,6 +3,7 @@
 const { handle } = require('./logic.js');
 const { store } = require('./pgstore.js');
 const { rooms, chat } = require('./social.js');
+const { matches } = require('./matches.js');
 
 const ADMIN_USERNAME = 'bitbat';
 const ROOM_GAMES = ['bomb', 'gomoku', 'racing', 'class-sim'];
@@ -110,6 +111,73 @@ async function handleSocial(event, secret) {
       return { ok: true, channel, messages };
     }
 
+    // ---- 轮询式联机对战（不需要常驻 WebSocket 服务） ----
+    case 'matchCreate': {
+      const code = String(event.code || '').toUpperCase();
+      if (!/^[A-Z0-9]{3,10}$/.test(code)) return { ok: false, message: '对战号 3–10 位字母或数字' };
+      if (!['bomb', 'gomoku', 'racing'].includes(String(event.game))) return { ok: false, message: '未知游戏' };
+      try {
+        const m = await matches.create({
+          code,
+          game: String(event.game),
+          owner: me,
+          seed: Number(event.seed) || Math.floor(Math.random() * 1e9),
+          mapOrder: event.mapOrder || [0, 1, 2],
+        });
+        return { ok: true, match: m };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'matchJoin': {
+      try {
+        const m = await matches.join(String(event.code || '').toUpperCase(), me);
+        return { ok: true, match: m };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'matchState': {
+      const m = await matches.get(String(event.code || '').toUpperCase());
+      if (!m) return { ok: false, message: '对战不存在' };
+      return { ok: true, match: m, me };
+    }
+    case 'matchList': {
+      return { ok: true, matches: await matches.list(event.game) };
+    }
+    case 'matchCode': {
+      try {
+        const m = await matches.submitCode(String(event.code || '').toUpperCase(), me, event.src || '');
+        return { ok: true, match: m };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'matchReady': {
+      try {
+        const m = await matches.setReady(String(event.code || '').toUpperCase(), me, event.ready !== false);
+        return { ok: true, match: m };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'matchAdvance': {
+      try {
+        const r = await matches.advance(String(event.code || '').toUpperCase(), event.turns, event.delta);
+        return { ok: true, applied: r.applied, match: r.match };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'matchFinish': {
+      try {
+        const m = await matches.finish(String(event.code || '').toUpperCase(), event.result);
+        return { ok: true, match: m };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+
     default:
       return { ok: false, message: '未知操作' };
   }
@@ -121,6 +189,8 @@ exports.main = async (event = {}) => {
     const socialActions = new Set([
       'roomCreate', 'roomList', 'roomJoin', 'roomApprove', 'roomLeave', 'roomMembers',
       'chatSend', 'chatFetch',
+      'matchCreate', 'matchJoin', 'matchState', 'matchList', 'matchCode',
+      'matchReady', 'matchAdvance', 'matchFinish',
     ]);
     if (socialActions.has(event.action)) {
       return await handleSocial(event, secret);

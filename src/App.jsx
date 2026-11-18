@@ -7,6 +7,7 @@ import DeleteAccountDialog from './components/DeleteAccountDialog.jsx';
 import RoomLobby from './components/RoomLobby.jsx';
 import RoomView from './components/RoomView.jsx';
 import ChatSidebar from './components/ChatSidebar.jsx';
+import PollingMatch from './components/PollingMatch.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
 // 管理员用户名（与云函数中的常量保持一致）
@@ -94,6 +95,8 @@ export default function App() {
       {user && user.username === ADMIN_USERNAME && <AdminPanel />}
 
       {user && <RoomLobby me={user.username} onEnter={(r) => setRoom(r)} />}
+      {user && <PollingMatch game="bomb" me={user.username} />}
+
       {user && room && (
         <RoomView room={room} me={user.username} onLeave={() => setRoom(null)} />
       )}
