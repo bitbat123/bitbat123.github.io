@@ -4,6 +4,7 @@ const { handle } = require('./logic.js');
 const { store } = require('./pgstore.js');
 const { rooms, chat } = require('./social.js');
 const { matches } = require('./matches.js');
+const { admins, feedback } = require('./feedback.js');
 
 const ADMIN_USERNAME = 'bitbat';
 const ROOM_GAMES = ['bomb', 'gomoku', 'racing', 'class-sim'];
@@ -178,6 +179,75 @@ async function handleSocial(event, secret) {
       }
     }
 
+    // ---- 反馈 ----
+    case 'feedbackAdd': {
+      try {
+        const r = await feedback.add({
+          sender: me,
+          game: String(event.game || 'home'),
+          body: event.body,
+          contact: event.contact,
+        });
+        return { ok: true, feedback: r };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'feedbackMy': {
+      return { ok: true, items: await feedback.list(event.status, me) };
+    }
+    // ---- 管理员：审核权限 ----
+    case 'adminWhoAmI': {
+      const role = await admins.roleOf(me);
+      return { ok: true, username: me, role: role || null, isAdmin: !!role, isSuper: role === 'super' };
+    }
+    case 'feedbackList': {
+      if (!(await admins.roleOf(me))) return { ok: false, message: '需要管理员权限' };
+      return { ok: true, items: await feedback.list(event.status) };
+    }
+    case 'feedbackReview': {
+      if (!(await admins.roleOf(me))) return { ok: false, message: '需要管理员权限' };
+      try {
+        const ok2 = await feedback.setStatus(event.id, String(event.status || 'done'), event.reply);
+        if (!ok2) return { ok: false, message: '反馈不存在' };
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    // ---- 超级管理员：管理员增删改 ----
+    case 'adminList': {
+      if (!(await admins.roleOf(me))) return { ok: false, message: '需要管理员权限' };
+      return { ok: true, admins: await admins.list() };
+    }
+    case 'adminAdd': {
+      if ((await admins.roleOf(me)) !== 'super') return { ok: false, message: '需要超级管理员权限' };
+      try {
+        const list = await admins.add(String(event.username || ''), String(event.role || 'admin'), me);
+        return { ok: true, admins: list };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'adminRemove': {
+      if ((await admins.roleOf(me)) !== 'super') return { ok: false, message: '需要超级管理员权限' };
+      try {
+        const list = await admins.remove(String(event.username || ''));
+        return { ok: true, admins: list };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+    case 'adminSetRole': {
+      if ((await admins.roleOf(me)) !== 'super') return { ok: false, message: '需要超级管理员权限' };
+      try {
+        const list = await admins.setRole(String(event.username || ''), String(event.role || 'admin'));
+        return { ok: true, admins: list };
+      } catch (e) {
+        return { ok: false, message: e.message };
+      }
+    }
+
     default:
       return { ok: false, message: '未知操作' };
   }
@@ -191,11 +261,14 @@ exports.main = async (event = {}) => {
       'chatSend', 'chatFetch',
       'matchCreate', 'matchJoin', 'matchState', 'matchList', 'matchCode',
       'matchReady', 'matchAdvance', 'matchFinish',
+      'feedbackAdd', 'feedbackMy', 'feedbackList', 'feedbackReview',
+      'adminWhoAmI', 'adminList', 'adminAdd', 'adminRemove', 'adminSetRole',
     ]);
     if (socialActions.has(event.action)) {
       return await handleSocial(event, secret);
     }
-    return await handle(event, store, { secret });
+    // 审核类操作额外传入「是否为管理员」的查询函数（权限来自 social.admins 表）
+    return await handle(event, store, { secret, isAdmin: async (u) => !!(await admins.roleOf(u)) });
   } catch (e) {
     return { ok: false, message: '服务器错误：' + e.message };
   }

@@ -123,7 +123,10 @@ async function handle(event = {}, store, cfg) {
 
   if (action === 'listPending' || action === 'review') {
     const sess = verifySession(event.token, secret);
-    if (!sess || sess.username !== ADMIN_USERNAME) return fail('无管理员权限');
+    if (!sess) return fail('请先登录');
+    // 审核权限来自管理员表：超级管理员与普通管理员都能审核
+    const isAdmin = await cfg.isAdmin?.(sess.username);
+    if (!isAdmin && sess.username !== ADMIN_USERNAME) return fail('无管理员权限');
 
     if (action === 'listPending') {
       return ok({ users: await store.listPending() });

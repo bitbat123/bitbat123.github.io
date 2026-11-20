@@ -250,3 +250,42 @@ a.game-card:hover { transform: translateY(-4px); border-color: #8b5cf6; box-shad
 .polling-card textarea { width: 100%; background: rgba(15,23,42,0.85); border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: #e2e8f0; font: inherit; font-family: Consolas, monospace; font-size: 13px; }
 .turn-box { background: rgba(15,23,42,0.7); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
 .result-line { color: #fbbf24; font-weight: 600; }
+
+/* ---------- 反馈 ---------- */
+.feedback-fab {
+  position: fixed; left: 18px; bottom: 18px; z-index: 2147482999;
+  display: flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, #f59e0b, #ec4899);
+  color: #fff; border: none; border-radius: 999px; padding: 10px 16px;
+  font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+}
+.feedback-fab:hover { transform: translateY(-2px); }
+.feedback-drawer {
+  position: fixed; left: 18px; bottom: 18px; z-index: 2147483000;
+  width: min(420px, calc(100vw - 36px)); max-height: min(620px, calc(100vh - 36px));
+  background: #0f172a; border: 1px solid var(--border); border-radius: 16px;
+  display: flex; flex-direction: column; gap: 8px; padding: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+}
+.feedback-head { display: flex; justify-content: space-between; align-items: center; }
+.feedback-head h3 { font-size: 15px; }
+.feedback-tabs { display: flex; gap: 6px; }
+.feedback-tabs button { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid var(--border); color: #94a3b8; font: inherit; font-size: 13px; padding: 6px; border-radius: 8px; cursor: pointer; }
+.feedback-tabs button.on { background: rgba(245,158,11,0.22); border-color: #f59e0b; color: #fff; }
+.feedback-write, .feedback-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.feedback-write textarea, .feedback-write input, .feedback-reply-box input {
+  width: 100%; background: rgba(15,23,42,0.85); border: 1px solid var(--border); border-radius: 9px;
+  padding: 9px; color: #e2e8f0; font: inherit; font-size: 13px; resize: vertical;
+}
+.feedback-actions { display: flex; justify-content: space-between; align-items: center; }
+.feedback-item { background: rgba(30,41,59,0.75); border-radius: 10px; padding: 9px 11px; display: flex; flex-direction: column; gap: 6px; }
+.feedback-item-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; flex-wrap: wrap; }
+.feedback-status { font-weight: 700; }
+.feedback-body { font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.feedback-reply { font-size: 12px; color: #86efac; background: rgba(34,197,94,0.1); border-radius: 7px; padding: 6px 8px; }
+.feedback-reply-box { display: flex; flex-direction: column; gap: 6px; }
+.admin-add { margin: 10px 0; }
+.admin-add h3 { font-size: 13px; margin-bottom: 6px; }
+.role-tag { display: inline-block; margin-left: 8px; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: rgba(148,163,184,0.2); color: #cbd5e1; }
+.role-tag.super { background: rgba(251,191,36,0.2); color: #fde68a; }

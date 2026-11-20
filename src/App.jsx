@@ -7,6 +7,8 @@ import DeleteAccountDialog from './components/DeleteAccountDialog.jsx';
 import RoomLobby from './components/RoomLobby.jsx';
 import RoomView from './components/RoomView.jsx';
 import ChatSidebar from './components/ChatSidebar.jsx';
+import FeedbackPanel from './components/FeedbackPanel.jsx';
+import AdminManager from './components/AdminManager.jsx';
 import PollingMatch from './components/PollingMatch.jsx';
 import { callAuth, getToken, clearToken } from './cloud.js';
 
@@ -25,6 +27,7 @@ export default function App() {
   const [checking, setChecking] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
   const [room, setRoom] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // 启动时用本地令牌恢复会话，恢复成功则直接进入游戏列表
   useEffect(() => {
@@ -36,7 +39,15 @@ export default function App() {
       .finally(() => setChecking(false));
   }, []);
 
-  const logout = () => { clearToken(); setUser(null); setGuest(false); };
+  // 登录后查询管理员身份（审核 / 反馈管理入口依赖它）
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return; }
+    callAuth('adminWhoAmI', {})
+      .then((r) => setIsAdmin(!!(r && r.ok && r.isAdmin)))
+      .catch(() => setIsAdmin(false));
+  }, [user]);
+
+  const logout = () => { clearToken(); setUser(null); setGuest(false); setIsAdmin(false); };
 
   if (checking) {
     return <div className="home"><p className="muted center">加载中…</p></div>;
@@ -92,7 +103,7 @@ export default function App() {
         />
       )}
 
-      {user && user.username === ADMIN_USERNAME && <AdminPanel />}
+      {user && isAdmin && <AdminManager me={user.username} />}
 
       {user && <RoomLobby me={user.username} onEnter={(r) => setRoom(r)} />}
       {user && <PollingMatch game="bomb" me={user.username} />}
@@ -129,6 +140,8 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {user && <FeedbackPanel game="home" me={user.username} isAdmin={isAdmin} />}
 
       {user && <ChatSidebar me={user.username} />}
 
